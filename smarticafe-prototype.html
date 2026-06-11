@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SmArtiCafe — AI Kitchen Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --navy: #1a365d;
+    --navy-light: #2a4a7f;
+    --navy-pale: #e8edf5;
+    --green: #007a3f;
+    --green-light: #009e52;
+    --green-pale: #e6f4ed;
+    --amber: #c47a00;
+    --amber-pale: #fff3d6;
+    --red: #c0392b;
+    --red-pale: #fdecea;
+    --white: #ffffff;
+    --bg: #f7f8fa;
+    --border: #e2e6ec;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    background: var(--green);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #7fe3b0;
+    font-weight: 500;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #7fe3b0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .location-pill {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: none;
+  }
+  @media(min-width:600px){ .location-pill { display: block; } }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    transition: color .15s;
+    flex-shrink: 0;
+  }
+  .tab-btn i { font-size: 18px; }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--navy); font-weight: 500; }
+  .tab-btn:hover:not(.active) { color: var(--navy); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .page { padding: 16px; max-width: 900px; margin: 0 auto; }
+
+  /* ── BANNER ── */
+  .banner {
+    background: var(--green);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .banner-text { color: white; font-size: 13px; line-height: 1.5; }
+  .banner-text strong { font-weight: 600; font-size: 14px; display: block; margin-bottom: 2px; }
+  .banner-icon { font-size: 28px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+
+  /* ── METRIC GRID ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  @media(min-width:600px) { .metric-grid { grid-template-columns: repeat(4, 1fr); } }
+  .mcard {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+  }
+  .mcard-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+  .mcard-val { font-size: 22px; font-weight: 600; color: var(--text); font-family: 'DM Sans', sans-serif; }
+  .mcard-sub { font-size: 11px; margin-top: 3px; display: flex; align-items: center; gap: 3px; }
+  .c-green { color: var(--green); }
+  .c-amber { color: var(--amber); }
+  .c-red { color: var(--red); }
+  .c-navy { color: var(--navy); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .card-title i { font-size: 16px; color: var(--green); }
+  .card-action {
+    font-size: 12px;
+    color: var(--green);
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .card-action:hover { text-decoration: underline; }
+
+  /* ── ALERTS ── */
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: opacity .15s;
+  }
+  .alert:hover { opacity: .85; }
+  .alert:last-child { margin-bottom: 0; }
+  .alert.warn { background: var(--amber-pale); border-color: #f0c060; }
+  .alert.ok { background: var(--green-pale); border-color: #7fd4a8; }
+  .alert.info { background: var(--navy-pale); border-color: #b0c4e0; }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert.warn .alert-icon { color: var(--amber); }
+  .alert.ok .alert-icon { color: var(--green); }
+  .alert.info .alert-icon { color: var(--navy); }
+  .alert-body { font-size: 12px; color: var(--text); line-height: 1.5; }
+  .alert-body strong { font-weight: 600; }
+
+  /* ── CHIPS ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .chip i { font-size: 12px; }
+  .chip.active { background: var(--green-pale); border-color: #7fd4a8; color: var(--green); }
+  .chip.warn { background: var(--amber-pale); border-color: #f0c060; color: var(--amber); }
+
+  /* ── CHARTS ── */
+  .chart-wrap { position: relative; width: 100%; height: 180px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .legend-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── PRODUCTION LIST ── */
+  .prod-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .prod-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .prod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .prod-info { flex: 1; }
+  .prod-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .prod-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-green { background: var(--green-pale); color: var(--green); }
+  .badge-amber { background: var(--amber-pale); color: var(--amber); }
+  .badge-gray { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ── WASTE BARS ── */
+  .waste-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .waste-row:last-child { border-bottom: none; }
+  .waste-name { flex: 1; font-size: 13px; color: var(--text); }
+  .waste-bar-wrap { width: 90px; flex-shrink: 0; }
+  .waste-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .waste-bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+  .waste-pct { font-size: 10px; color: var(--muted); margin-top: 2px; text-align: right; }
+
+  /* ── INSIGHTS ── */
+  .insight-item {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .insight-item:hover { border-color: var(--green); background: var(--green-pale); }
+  .insight-item:last-child { margin-bottom: 0; }
+  .insight-cat {
+    font-size: 10px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .insight-cat i { font-size: 12px; }
+  .insight-text { font-size: 13px; color: var(--text); line-height: 1.55; }
+  .insight-cta { font-size: 11px; color: var(--green); margin-top: 5px; font-weight: 500; }
+
+  /* ── AI BAR ── */
+  .ai-bar {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .ai-input {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .ai-input:focus { border-color: var(--green); }
+  .ai-send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--green);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .ai-send-btn:hover { background: var(--green-light); }
+  .ai-send-btn i { font-size: 16px; color: white; }
+
+  /* ── LEADERBOARD (NAVBAR DARK) ── */
+  .leaderboard-section { background: var(--navy); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px; }
+  .leaderboard-title { font-size: 13px; font-weight: 600; color: white; margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+  .leaderboard-title i { color: #7fe3b0; font-size: 16px; }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+    background: rgba(255,255,255,0.07);
+  }
+  .lb-row:last-child { margin-bottom: 0; }
+  .lb-rank { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); width: 20px; text-align: center; }
+  .lb-name { flex: 1; font-size: 13px; color: white; font-weight: 500; }
+  .lb-val { font-size: 12px; color: #7fe3b0; font-weight: 600; }
+  .lb-sub { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+
+  /* ── PREP TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 8px; }
+  .tl-row { display: flex; align-items: center; gap: 10px; }
+  .tl-time { font-size: 11px; color: var(--muted); width: 36px; flex-shrink: 0; }
+  .tl-bar {
+    flex: 1;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tl-bar.green { background: var(--green-pale); color: var(--green); }
+  .tl-bar.amber { background: var(--amber-pale); color: var(--amber); }
+  .tl-bar.navy { background: var(--navy-pale); color: var(--navy); }
+
+  /* ── TWO-COL ON WIDE ── */
+  .two-col { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media(min-width: 700px) { .two-col { grid-template-columns: 1fr 1fr; } }
+
+  /* ── SECTION HEAD ── */
+  .section-head { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+  /* ── CTA BUTTON ── */
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: var(--green);
+    color: white;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .cta-btn:hover { background: var(--green-light); }
+  .cta-btn.navy { background: var(--navy); }
+  .cta-btn.navy:hover { background: var(--navy-light); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    margin-top: 32px;
+  }
+  .footer strong { color: white; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── CONTACT FORM ── */
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 5px; display: block; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); }
+  .form-textarea { resize: vertical; min-height: 90px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a class="logo" href="#">
+    <div class="logo-mark"><i class="ti ti-tools-kitchen-2"></i></div>
+    SmArtiCafe
+  </a>
+  <div class="header-right">
+    <span class="location-pill"><i class="ti ti-building"></i> Mensa Stadtmitte</span>
+    <span class="live-badge"><span class="live-dot"></span>Live</span>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs" id="nav-tabs">
+  <button class="tab-btn active" data-screen="overview"><i class="ti ti-layout-dashboard"></i>Overview</button>
+  <button class="tab-btn" data-screen="production"><i class="ti ti-tools-kitchen-2"></i>Plan</button>
+  <button class="tab-btn" data-screen="waste"><i class="ti ti-leaf"></i>Waste</button>
+  <button class="tab-btn" data-screen="insights"><i class="ti ti-sparkles"></i>AI Insights</button>
+  <button class="tab-btn" data-screen="contact"><i class="ti ti-mail"></i>Get Demo</button>
+</nav>
+
+<!-- ════════════════════════════════
+     SCREEN: OVERVIEW
+════════════════════════════════ -->
+<section class="screen active" id="screen-overview">
+  <div class="page">
+
+    <div class="banner">
+      <div class="banner-text">
+        <strong>Good morning — Thursday 11 June</strong>
+        AI has detected 1 production risk. Pasta batch needs adjustment before 9:00.
+      </div>
+      <i class="ti ti-coffee banner-icon"></i>
+    </div>
+
+    <div class="metric-grid">
+      <div class="mcard">
+        <div class="mcard-label">Forecast accuracy</div>
+        <div class="mcard-val">94%</div>
+        <div class="mcard-sub c-green"><i class="ti ti-trending-up"></i> +2% this week</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">Portions today</div>
+        <div class="mcard-val">1,240</div>
+        <div class="mcard-sub" style="color:var(--muted)">Peak 12–13h</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">Waste risk</div>
+        <div class="mcard-val c-amber">Medium</div>
+        <div class="mcard-sub c-amber"><i class="ti ti-alert-triangle"></i> Pasta overstock</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">Saved (month)</div>
+        <div class="mcard-val c-green">€840</div>
+        <div class="mcard-sub c-green">vs. manual baseline</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-chart-line"></i>Demand pulse · today</div>
+            <button class="card-action" onclick="switchScreen('insights')">See AI analysis →</button>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="demandChart" role="img" aria-label="Demand forecast chart: forecast vs actual portions by hour, peak at noon">Forecast peak 12h: 420 portions. Actual 11h-12:30h tracked.</canvas>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item"><span class="legend-sq" style="background:#007a3f"></span>Forecast</div>
+            <div class="legend-item"><span class="legend-sq" style="background:#7fd4a8"></span>Actual (so far)</div>
+          </div>
+          <div class="chips">
+            <div class="chip active"><i class="ti ti-cloud-sun"></i> Sunny 24°C</div>
+            <div class="chip active"><i class="ti ti-school"></i> Exam week</div>
+            <div class="chip warn"><i class="ti ti-calendar-event"></i> Concert +8%</div>
+            <div class="chip"><i class="ti ti-calendar-off"></i> No holiday</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-bell-ringing"></i>Alerts</div>
+          </div>
+          <div class="alert warn" onclick="switchScreen('production')">
+            <i class="ti ti-alert-triangle alert-icon"></i>
+            <div class="alert-body"><strong>Pasta overstock risk</strong><br>Forecast 180 · Planned 240. Reduce by 60 portions before prep.</div>
+          </div>
+          <div class="alert ok">
+            <i class="ti ti-circle-check alert-icon"></i>
+            <div class="alert-body"><strong>Salad bar on target</strong> — 95 portions ready, forecast 90–100.</div>
+          </div>
+          <div class="alert info">
+            <i class="ti ti-info-circle alert-icon"></i>
+            <div class="alert-body"><strong>Tomorrow:</strong> Public holiday detected. Demand −65%, production auto-scaled.</div>
+          </div>
+        </div>
+
+        <div class="leaderboard-section">
+          <div class="leaderboard-title"><i class="ti ti-trophy"></i>Top waste-savers · this month</div>
+          <div class="lb-row">
+            <div class="lb-rank">1</div>
+            <div><div class="lb-name">Campus Kitchen B</div><div class="lb-sub">Mensa Nord</div></div>
+            <div class="lb-val">−42 kg</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">2</div>
+            <div><div class="lb-name">Stadtmitte</div><div class="lb-sub">This location</div></div>
+            <div class="lb-val">−38 kg</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">3</div>
+            <div><div class="lb-name">Canteen West</div><div class="lb-sub">Weststadt</div></div>
+            <div class="lb-val">−31 kg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SCREEN: PRODUCTION
+════════════════════════════════ -->
+<section class="screen" id="screen-production">
+  <div class="page">
+
+    <div class="banner">
+      <div class="banner-text">
+        <strong>Lunch production plan · Thu 11 Jun</strong>
+        1 item needs adjustment. Review the pasta batch before 9:00 to avoid waste.
+      </div>
+      <i class="ti ti-clipboard-list banner-icon"></i>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-head">Dish targets</div>
+        <div class="card" style="padding:14px 16px">
+          <div class="prod-row">
+            <div class="prod-dot" style="background:var(--amber)"></div>
+            <div class="prod-info">
+              <div class="prod-name">Tomato pasta</div>
+              <div class="prod-sub">Planned 180 → <strong style="color:var(--amber)">120 recommended</strong></div>
+            </div>
+            <span class="badge badge-amber">Reduce</span>
+          </div>
+          <div class="prod-row">
+            <div class="prod-dot" style="background:var(--green)"></div>
+            <div class="prod-info">
+              <div class="prod-name">Chicken schnitzel</div>
+              <div class="prod-sub">300 portions confirmed</div>
+            </div>
+            <span class="badge badge-green">On track</span>
+          </div>
+          <div class="prod-row">
+            <div class="prod-dot" style="background:var(--green)"></div>
+            <div class="prod-info">
+              <div class="prod-name">Veggie curry</div>
+              <div class="prod-sub">220 portions confirmed</div>
+            </div>
+            <span class="badge badge-green">On track</span>
+          </div>
+          <div class="prod-row">
+            <div class="prod-dot" style="background:var(--green)"></div>
+            <div class="prod-info">
+              <div class="prod-name">Salad bar</div>
+              <div class="prod-sub">95 portions ready</div>
+            </div>
+            <span class="badge badge-green">On track</span>
+          </div>
+          <div class="prod-row">
+            <div class="prod-dot" style="background:#b4b2a9"></div>
+            <div class="prod-info">
+              <div class="prod-name">Dessert of the day</div>
+              <div class="prod-sub">180 portions · awaiting data</div>
+            </div>
+            <span class="badge badge-gray">Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">Prep schedule</div>
+        <div class="card">
+          <div class="timeline">
+            <div class="tl-row">
+              <span class="tl-time">7:00</span>
+              <div class="tl-bar green"><i class="ti ti-plant" style="margin-right:6px;font-size:12px"></i>Stock & vegetable prep</div>
+            </div>
+            <div class="tl-row">
+              <span class="tl-time">9:00</span>
+              <div class="tl-bar amber"><i class="ti ti-alert-triangle" style="margin-right:6px;font-size:12px"></i>Reduce pasta batch now</div>
+            </div>
+            <div class="tl-row">
+              <span class="tl-time">10:30</span>
+              <div class="tl-bar green"><i class="ti ti-flame" style="margin-right:6px;font-size:12px"></i>Schnitzel breading</div>
+            </div>
+            <div class="tl-row">
+              <span class="tl-time">11:00</span>
+              <div class="tl-bar green"><i class="ti ti-salad" style="margin-right:6px;font-size:12px"></i>Salad bar setup</div>
+            </div>
+            <div class="tl-row">
+              <span class="tl-time">11:30</span>
+              <div class="tl-bar navy"><i class="ti ti-door-enter" style="margin-right:6px;font-size:12px"></i>Service opens — peak incoming</div>
+            </div>
+            <div class="tl-row">
+              <span class="tl-time">14:00</span>
+              <div class="tl-bar green"><i class="ti ti-chart-bar" style="margin-right:6px;font-size:12px"></i>Post-service waste log</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-head">Hourly distribution</div>
+        <div class="card">
+          <div style="position:relative;width:100%;height:120px">
+            <canvas id="hourlyChart" role="img" aria-label="Hourly portion distribution, peak at 12:00 with 420 portions">Hourly: 10h=80, 11h=180, 12h=420, 13h=340, 14h=160, 15h=80.</canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SCREEN: WASTE
+════════════════════════════════ -->
+<section class="screen" id="screen-waste">
+  <div class="page">
+
+    <div class="banner">
+      <div class="banner-text">
+        <strong>Waste prevention · this week</strong>
+        AI has identified 2 high-waste dishes. Proactive adjustments can save €120 this month.
+      </div>
+      <i class="ti ti-leaf banner-icon"></i>
+    </div>
+
+    <div class="metric-grid">
+      <div class="mcard">
+        <div class="mcard-label">Est. waste today</div>
+        <div class="mcard-val c-amber">4.2 kg</div>
+        <div class="mcard-sub c-green">−1.8 kg vs avg</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">Waste cost</div>
+        <div class="mcard-val">€38</div>
+        <div class="mcard-sub c-green"><i class="ti ti-trending-down"></i> Trend down</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">CO₂ avoided</div>
+        <div class="mcard-val c-green">42 kg</div>
+        <div class="mcard-sub" style="color:var(--muted)">This month (ESG)</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-label">Saved (month)</div>
+        <div class="mcard-val c-navy">€840</div>
+        <div class="mcard-sub c-green">vs. manual planning</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-head">Waste by dish · this week</div>
+        <div class="card">
+          <div class="waste-row">
+            <div class="waste-name">Tomato pasta</div>
+            <div class="waste-bar-wrap">
+              <div class="waste-bar-bg"><div class="waste-bar-fill" style="width:72%;background:var(--amber)"></div></div>
+              <div class="waste-pct">72% waste rate</div>
+            </div>
+            <span class="badge badge-amber">High</span>
+          </div>
+          <div class="waste-row">
+            <div class="waste-name">Dessert</div>
+            <div class="waste-bar-wrap">
+              <div class="waste-bar-bg"><div class="waste-bar-fill" style="width:45%;background:#e8a000"></div></div>
+              <div class="waste-pct">45% waste rate</div>
+            </div>
+            <span class="badge badge-amber">Mid</span>
+          </div>
+          <div class="waste-row">
+            <div class="waste-name">Veggie curry</div>
+            <div class="waste-bar-wrap">
+              <div class="waste-bar-bg"><div class="waste-bar-fill" style="width:28%;background:var(--green)"></div></div>
+              <div class="waste-pct">28% waste rate</div>
+            </div>
+            <span class="badge badge-green">Low</span>
+          </div>
+          <div class="waste-row">
+            <div class="waste-name">Chicken schnitzel</div>
+            <div class="waste-bar-wrap">
+              <div class="waste-bar-bg"><div class="waste-bar-fill" style="width:15%;background:var(--green)"></div></div>
+              <div class="waste-pct">15% waste rate</div>
+            </div>
+            <span class="badge badge-green">Low</span>
+          </div>
+          <div class="waste-row">
+            <div class="waste-name">Salad bar</div>
+            <div class="waste-bar-wrap">
+              <div class="waste-bar-bg"><div class="waste-bar-fill" style="width:10%;background:var(--green)"></div></div>
+              <div class="waste-pct">10% waste rate</div>
+            </div>
+            <span class="badge badge-green">Low</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">Monthly savings trend</div>
+        <div class="card">
+          <div style="position:relative;width:100%;height:160px">
+            <canvas id="wasteChart" role="img" aria-label="Monthly waste kg trend from February to June showing decline">Monthly waste kg: Feb=68, Mar=57, Apr=48, May=41, Jun=36 (partial).</canvas>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">Waste kg per service — declining trend since SmArtiCafe rollout in Feb</div>
+        </div>
+
+        <div class="section-head">ESG snapshot</div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:13px;color:var(--text)">CO₂ equivalent avoided</span>
+              <span style="font-size:13px;font-weight:600;color:var(--green)">42 kg this month</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:13px;color:var(--text)">Food waste reduction</span>
+              <span style="font-size:13px;font-weight:600;color:var(--green)">−47% since Feb</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+              <span style="font-size:13px;color:var(--text)">Sustainability report</span>
+              <button class="cta-btn" style="padding:6px 12px;font-size:12px" onclick="showToast('ESG report generated — ready to download')"><i class="ti ti-download"></i> Export PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SCREEN: AI INSIGHTS
+════════════════════════════════ -->
+<section class="screen" id="screen-insights">
+  <div class="page">
+
+    <div class="banner">
+      <div class="banner-text">
+        <strong>AI insights for today</strong>
+        4 recommendations based on demand signals, historical patterns, and upcoming events.
+      </div>
+      <i class="ti ti-sparkles banner-icon"></i>
+    </div>
+
+    <div class="section-head">Tap an insight to explore</div>
+
+    <div class="insight-item" onclick="showToast('Opening: Why pasta drops 30% on Thursdays...')">
+      <div class="insight-cat"><i class="ti ti-chart-dots"></i> Demand pattern</div>
+      <div class="insight-text">Pasta demand drops 30% every Thursday — likely due to the weekly vegan special pulling volume. Consider reallocating 40 portions to schnitzel.</div>
+      <div class="insight-cta">Analyse pattern →</div>
+    </div>
+
+    <div class="insight-item" onclick="showToast('Calculating: Saving estimate for pasta reduction...')">
+      <div class="insight-cat"><i class="ti ti-coin"></i> Cost saving</div>
+      <div class="insight-text">Reducing Thursday pasta by 40 portions would save ~€120/month based on current ingredient cost and waste rates. Payback is immediate.</div>
+      <div class="insight-cta">Calculate full saving →</div>
+    </div>
+
+    <div class="insight-item" onclick="showToast('Loading 7-day demand forecast with events...')">
+      <div class="insight-cat"><i class="ti ti-calendar-stats"></i> Next 7 days</div>
+      <div class="insight-text">Public holiday Friday cuts demand −65%. Two campus events Mon–Tue push lunch +18%. Auto-adjustments are staged and ready to approve.</div>
+      <div class="insight-cta">Review and approve plan →</div>
+    </div>
+
+    <div class="insight-item" onclick="showToast('Generating ESG sustainability report for May...')">
+      <div class="insight-cat"><i class="ti ti-leaf"></i> ESG reporting</div>
+      <div class="insight-text">May waste reduction: 42 kg CO₂ equivalent avoided across all sites. Report is ready to export for sustainability filing or investor disclosure.</div>
+      <div class="insight-cta">Export ESG report →</div>
+    </div>
+
+    <div class="insight-item" onclick="showToast('Running: Weather impact model for next week...')">
+      <div class="insight-cat"><i class="ti ti-cloud-rain"></i> Weather impact</div>
+      <div class="insight-text">Rain forecast Tuesday–Wednesday next week typically reduces outdoor-seating demand by 12%. Soup and warm dishes historically over-index. Adjust batch sizes now.</div>
+      <div class="insight-cta">Adjust for weather →</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:var(--navy-pale);border-radius:var(--radius-md);border:1px solid #b0c4e0">
+      <div class="section-head" style="color:var(--navy)">Ask the AI anything</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">Type a question below about demand, waste, production, or ESG reporting — or try one of these:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
+        <button class="badge badge-green" style="cursor:pointer;border:none;font-family:'Inter',sans-serif;font-size:12px;padding:5px 10px" onclick="fillAI('What will waste look like at end of today?')">Waste forecast today</button>
+        <button class="badge" style="cursor:pointer;border:1px solid var(--border);background:white;font-family:'Inter',sans-serif;font-size:12px;padding:5px 10px;color:var(--navy)" onclick="fillAI('Which items should I scale back next week?')">Next week planning</button>
+        <button class="badge" style="cursor:pointer;border:1px solid var(--border);background:white;font-family:'Inter',sans-serif;font-size:12px;padding:5px 10px;color:var(--navy)" onclick="fillAI('Generate an ESG report for last month')">ESG report</button>
+        <button class="badge" style="cursor:pointer;border:1px solid var(--border);background:white;font-family:'Inter',sans-serif;font-size:12px;padding:5px 10px;color:var(--navy)" onclick="fillAI('What is the ideal batch size for pasta today?')">Batch optimiser</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-bar">
+    <input class="ai-input" type="text" placeholder="Ask SmArtiCafe AI anything about your kitchen…" id="ai-input">
+    <button class="ai-send-btn" onclick="sendAI()" aria-label="Send question"><i class="ti ti-arrow-up"></i></button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SCREEN: CONTACT / DEMO
+════════════════════════════════ -->
+<section class="screen" id="screen-contact">
+  <div class="page">
+
+    <div class="banner">
+      <div class="banner-text">
+        <strong>Book a free demo</strong>
+        See SmArtiCafe running live in your kitchen. Setup takes 48 hours. No hardware needed.
+      </div>
+      <i class="ti ti-calendar-check banner-icon"></i>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-head">Request a demo</div>
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-input" type="text" placeholder="Your name" id="f-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="you@example.com" id="f-email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organisation</label>
+            <input class="form-input" type="text" placeholder="Mensa, canteen, restaurant…" id="f-org">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Number of daily covers</label>
+            <select class="form-select" id="f-covers">
+              <option value="">Select range</option>
+              <option>Under 200</option>
+              <option>200–500</option>
+              <option>500–1,000</option>
+              <option>1,000–3,000</option>
+              <option>3,000+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">What's your biggest challenge?</label>
+            <textarea class="form-textarea" placeholder="e.g. food waste, over-ordering, manual production planning…" id="f-msg"></textarea>
+          </div>
+          <button class="cta-btn" style="width:100%;justify-content:center" onclick="submitForm()"><i class="ti ti-send"></i> Request demo</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">What you get</div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-chart-line" style="color:var(--green);font-size:16px"></i></div>
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">AI demand forecasting</div><div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5">Real-time prediction integrating weather, events, school calendar, and holidays.</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-tools-kitchen-2" style="color:var(--green);font-size:16px"></i></div>
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Automated production plans</div><div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5">Daily batch targets and prep schedules generated automatically each morning.</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-leaf" style="color:var(--green);font-size:16px"></i></div>
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Proactive waste prevention</div><div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5">Alerts before waste happens — average 40% reduction within 30 days.</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:32px;height:32px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-certificate" style="color:var(--green);font-size:16px"></i></div>
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">ESG & sustainability reports</div><div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5">One-click CO₂ and food waste reports for sustainability filings.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-head" style="margin-top:14px">Pricing tiers</div>
+        <div class="card">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg);border-radius:8px">
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Standard</div><div style="font-size:11px;color:var(--muted)">Single location</div></div>
+              <div style="font-size:13px;font-weight:600;color:var(--green)">€299–599/mo</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--navy-pale);border-radius:8px;border:1px solid #b0c4e0">
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Enterprise</div><div style="font-size:11px;color:var(--muted)">Multi-site + API</div></div>
+              <div style="font-size:13px;font-weight:600;color:var(--navy)">€1,000–3,000/mo</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg);border-radius:8px">
+              <div><div style="font-size:13px;font-weight:600;color:var(--navy)">ESG Add-on</div><div style="font-size:11px;color:var(--muted)">Sustainability reporting</div></div>
+              <div style="font-size:13px;font-weight:600;color:var(--green)">+€500/mo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>SmArtiCafe</strong> — AI Kitchen Intelligence &nbsp;·&nbsp; <a href="#" style="color:rgba(255,255,255,.55)">smarticafe.io</a> &nbsp;·&nbsp; hello@smarticafe.io
+</footer>
+
+<script>
+// ── NAVIGATION ──
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelector('[data-screen="' + id + '"]').classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchScreen(btn.dataset.screen));
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── AI BAR ──
+function sendAI() {
+  const el = document.getElementById('ai-input');
+  const v = el.value.trim();
+  if (!v) return;
+  showToast('SmArtiCafe AI: analysing "' + v.substring(0, 40) + (v.length > 40 ? '…' : '') + '"');
+  el.value = '';
+}
+document.getElementById('ai-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendAI(); });
+function fillAI(q) {
+  document.getElementById('ai-input').value = q;
+  document.getElementById('ai-input').focus();
+}
+
+// ── FORM ──
+function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  if (!name || !email) { showToast('Please enter your name and email.'); return; }
+  showToast('Thank you ' + name + '! We\'ll be in touch within 24h.');
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('f-org').value = '';
+  document.getElementById('f-covers').value = '';
+  document.getElementById('f-msg').value = '';
+}
+
+// ── CHARTS ──
+window.addEventListener('load', function() {
+  // Demand chart
+  var isDark = false;
+  var gc = '#e2e6ec';
+  var tc = '#9ca3af';
+  new Chart(document.getElementById('demandChart'), {
+    type: 'line',
+    data: {
+      labels: ['10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00'],
+      datasets: [
+        {
+          label: 'Forecast',
+          data: [20,60,120,220,390,430,320,230,140,90,50],
+          borderColor: '#007a3f',
+          backgroundColor: 'rgba(0,122,63,0.08)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 2,
+          pointBackgroundColor: '#007a3f'
+        },
+        {
+          label: 'Actual',
+          data: [18,58,115,230,410,440,null,null,null,null,null],
+          borderColor: '#7fd4a8',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [4,3],
+          tension: 0.4,
+          pointRadius: 3,
+          pointBackgroundColor: '#7fd4a8'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: {
+        x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } }, min: 0, suggestedMax: 500 }
+      }
+    }
+  });
+
+  // Hourly chart
+  new Chart(document.getElementById('hourlyChart'), {
+    type: 'bar',
+    data: {
+      labels: ['10h','11h','12h','13h','14h','15h'],
+      datasets: [{
+        label: 'Portions',
+        data: [80, 180, 420, 340, 160, 80],
+        backgroundColor: ['#9FE1CB','#5DCAA5','#007a3f','#009e52','#5DCAA5','#9FE1CB'],
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: tc, font: { size: 10 } } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } }
+      }
+    }
+  });
+
+  // Waste trend chart
+  new Chart(document.getElementById('wasteChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Feb','Mar','Apr','May','Jun'],
+      datasets: [{
+        label: 'Waste kg',
+        data: [68, 57, 48, 41, 36],
+        backgroundColor: ['#b0c4e0','#8daed4','#6b99c9','#1a365d','#007a3f'],
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: tc, font: { size: 11 } } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 } }, suggestedMax: 80 }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
